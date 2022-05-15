@@ -46,5 +46,5 @@ _deps
 CMakeSettings.json
 #vs
 
-./vs/
-./build/
+.vs/
+build/
