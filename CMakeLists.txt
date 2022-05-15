@@ -25,7 +25,7 @@ include_directories(simulator src/include)
 #glfw
 
 add_subdirectory(externals/glfw)
-#include_directories(simulator externals/glfw/include )
+
 #imgui
 add_library(
     imgui
