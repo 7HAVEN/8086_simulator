@@ -60,7 +60,7 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
        
     }
    glfwMakeContextCurrent(this->win);
-   glfwSwapInterval(1); // Enable vsync
+//    glfwSwapInterval(1); // Enable vsync
       //Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -95,6 +95,7 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
         {
             ImGui::Begin("Example Window", &show_another_window);
             ImGui::InputTextMultiline("example", buf, IM_ARRAYSIZE(buf), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
+           // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
             ImGui::End();
         }

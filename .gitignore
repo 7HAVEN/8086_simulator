@@ -48,3 +48,4 @@ CMakeSettings.json
 
 .vs/
 build/
+.vscode/
