@@ -7,16 +7,20 @@
 memory::memory(int memoryCells) {
 	this->memoryCells = memoryCells;
 	MAX_LIMIT = 10000;
-	memoryArray.resize(MAX_LIMIT,(uint8_t)0); // MAX limit is arbitarly set high to prevent memory outofbounds errors
+	memoryArray.resize(1000); // MAX limit is arbitarly set high to prevent memory outofbounds errors
+	for (auto& i : memoryArray) {
+		i.resize(MAX_LIMIT);
+	}
+	codeArray.resize(MAX_LIMIT); // same for code array
 }
 memory::~memory(){
 	memoryArray.clear();
 }
 
-bool memory::writeData(uint8_t data, int cellAddress) {
+bool memory::writeData( int segment, int cellAddress, uint8_t data ) {
 	try {
-
-		memoryArray[cellAddress] = data;
+		auto x = memoryArray;
+		memoryArray[segment][cellAddress] = data;
 		return true;
 	}
 	catch (std::exception& e) {
@@ -24,12 +28,12 @@ bool memory::writeData(uint8_t data, int cellAddress) {
 	}
 	return false;
 }
-uint8_t memory::getData(int cellAddress){
+uint8_t memory::getData(int segment, int cellAddress){
 	if(cellAddress > MAX_LIMIT){
 		throw "memory out of bounds";
 	}
 	else{
-		return memoryArray[cellAddress];
+		return memoryArray[segment][cellAddress];
 	}
 }
 
@@ -49,7 +53,7 @@ bool memory::writeCode(int starting_address, std::string codeLines) {
 	try {
 
 		std::vector<std::string> buf = string_splitter(codeLines);
-		codeArray.push_back({ starting_address,buf });
+		codeArray[starting_address] = buf;
 		
 		return true;
 	}
@@ -57,6 +61,10 @@ bool memory::writeCode(int starting_address, std::string codeLines) {
 		throw e;
 	}
 	return false;
+}
+
+std::vector<std::string> memory::getCode(int lineAddress) {
+	return codeArray[lineAddress];
 }
 
 // bool memory::reset(int newSize) {

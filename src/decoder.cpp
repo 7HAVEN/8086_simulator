@@ -5,24 +5,30 @@
 #include<sstream>
 
 int Decoder::decodeAndGiveOperation(std::vector<std::string> line){
-    
-    std::string  data = line[0];
-   //!(warn) this line will cause out of bounds error for one line instructions
+    try {
 
+    std::string  data = line[0];
+
+   //!(warn) this line will cause out of bounds error for one word instructions
     std::string secondHalfofInstruction = line[1]; // the second half of string
     std::vector<std::string> parts  = string_split_by_delimiter(secondHalfofInstruction, ',');
+    //1
     if (data == "MOV" || data == "mov") {
         if (isRegister(parts[0])) { // first agrument is register 
             if (isRegister(parts[1])) { // second arg is reg
-               
+                return 111; //1 mov 1 reg 1 reg
             }
-            else { // second arg is mem
-               
+            if(isMemory(parts[1])) { // second arg is mem
+                return 112; //1 mov 1 reg 2 mem
+            }
+            
+            else { //1 mov 1 reg 3 immediate data
+                return 113;
             }
         }
         else { // first part is mem
             if (isRegister(parts[1])) { // second arg is reg
-
+                return 121;
             }
             else { // second arg is mem as mem to mem data transfer is not possible ;-(
                 throw "invalid operation";
@@ -30,31 +36,70 @@ int Decoder::decodeAndGiveOperation(std::vector<std::string> line){
         }
         
     }
-        
+    //2    
     else if (data == "ADD" || data == "add")
         return 2;
     else if (data == "SUB" || data == "sub")
         return 3;
+    }
+    catch (std::exception e) {
+        throw e;
+    }
         
     return 0;
 
 }
 
 bool Decoder::isRegister(std::string data) {
+    //16 bit register
     if (data == "AX" || data == "Ax" || data == "ax") {
         return true;
     }
-    if (data == "BX" || data == "Bx" || data == "bx") {
-        return true;
-    }
-    if (data == "BX" || data == "Bx" || data == "bx") {
+    if (data == "BX" || data ==  "Bx" || data == "bx") {
         return true;
     }
     if (data == "CX" || data == "Cx" || data == "cx") {
         return true;
     }
-    return false;
+    if (data == "DX" || data == "Dx" || data == "dx") {
+        return true;
+    }
+    if (data == "DS" || data == "Ds" || data == "ds") {
+        return true;
+    }
+    //8bit registers
+
+    if (data == "AH" || data == "Ah" || data == "ah") {
+        return true;
+    }
+    if (data == "AL" || data == "Al" || data == "al") {
+        return true;
+    }
+
+    if (data == "BH" || data == "Bh" || data == "bh") {
+        return true;
+    }
+    if (data == "BL" || data == "Bl" || data == "bl") {
+        return true;
+    }
+
+    if (data == "CH" || data == "Ch" || data == "ch") {
+        return true;
+    }
+    if (data == "CL" || data == "Cl" || data == "cl") {
+        return true;
+    }
+
+    if (data == "DH" || data == "Dh" || data == "dh") {
+        return true;
+    }
+    if (data == "DL" || data == "Dl" || data == "dl") {
+        return true;
+    }
+
     
+    return false;
+   
 }
 bool Decoder::isMemory(std::string data) {
     if (data[0] == '[') {
@@ -65,7 +110,7 @@ bool Decoder::isMemory(std::string data) {
 
 
 
-std::vector<std::string> string_split_by_delimiter(std::string data, char delimiter) {
+std::vector<std::string> Decoder::string_split_by_delimiter(std::string data, char delimiter) {
 
     std::stringstream stream(data);
     std::vector<std::string> splitdata;
