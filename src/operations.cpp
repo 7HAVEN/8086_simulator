@@ -2,7 +2,12 @@
 
 _8086_Operations::_8086_Operations(memory *m) :mem(m){
 	Ds = 0;
-
+	for (auto& i : _16bitRegArray) {
+		i = 0;
+	};
+	for (auto& i : _8bitRegArray) {
+		i = 0;
+	};
 }
 //conditonal statement hell 
 bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> line) {

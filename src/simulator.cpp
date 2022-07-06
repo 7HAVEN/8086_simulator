@@ -34,7 +34,8 @@ int main(int argv, char argc[]) {
 		 std::cout << (unsigned)m.getData(20, 1) << "\n";
 		 opcode = d.decodeAndGiveOperation(m.getCode(2));
 		 oper.performOperation(opcode, m.getCode(2));
-		 oper.mov8bitDataintoReg(5, 23);
+		 //oper.mov8bitDataintoReg(5, 23);
+
 		 std::cout << (unsigned)oper.get8bitData(5) << "\n";
 		 std::vector<std::string> t = m.getCode(3);
 		 opcode = d.decodeAndGiveOperation(m.getCode(3));

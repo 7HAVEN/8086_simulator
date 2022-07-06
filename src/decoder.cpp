@@ -37,8 +37,11 @@ int Decoder::decodeAndGiveOperation(std::vector<std::string> line){
         
     }
     //2    
-    else if (data == "ADD" || data == "add")
-        return 2;
+    else if (data == "ADD" || data == "add") {
+        int opcodeRange = 200;
+        int operation_code = secondary_Operation(parts);
+        return opcodeRange + operation_code;
+    }
     else if (data == "SUB" || data == "sub")
         return 3;
     }
@@ -122,4 +125,21 @@ std::vector<std::string> Decoder::string_split_by_delimiter(std::string data, ch
     return splitdata;
 }
 
+int Decoder::secondary_Operation(std::vector<std::string> parts) {
+    
+    if (isRegister(parts[0])) {
+        if (isRegister(parts[1]))
+            return 11; // register to register addition
+        if (isMemory(parts[1]))
+            return 12; // register with  memory 
+        else
+            return 13;// register with immediate data
+    }
+    if (isMemory(parts[0])) {
+        if (isRegister(parts[1]))
+            return 21;
 
+    }
+    else
+        throw "invalid operation";
+}
