@@ -1,7 +1,8 @@
 #include "include/operations.h"
-
+#include<memory>
 _8086_Operations::_8086_Operations(memory *m) :mem(m){
 	Ds = 0;
+
 	for (auto& i : _16bitRegArray) {
 		i = 0;
 	};
@@ -31,6 +32,7 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 		int addr = getCellAddress(parts[0]);
 		uint8_t  data = getDataFromMemory(Ds, addr);
 		mov8bitDataintoReg(reg1, data);
+		return true;
 	}
 	if (Opcode == 113) { // immediate data to reg
 		int reg1 = whichReg(parts[0]);
@@ -39,9 +41,11 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 		
 		
 		_16bitRegArray[reg1] = intData;
-		return 0;
+		return true;
+	}
 
-
+	if (Opcode == 211) {
+		
 	}
 	return false;
 }
@@ -167,4 +171,24 @@ std::vector<std::string> _8086_Operations::string_split_by_delimiter(std::string
 		splitdata.push_back(temp);
 	}
 	return splitdata;
+}
+
+uint8_t _8086_Operations::arithmeticOperations(int opercode,int reg1 , int reg2 , bool isMemory = false) {
+	if (opercode == 11) {
+		
+		if(registerPair(reg1, reg2) == 11){}
+	}
+}
+
+int _8086_Operations::registerPair(int reg1 , int reg2) {
+	if (reg1 < 4 && reg2 < 4) {
+		return 11; // it means we have 16 bit registers
+	}
+	else if (reg1 > 3 && reg2 > 3) {
+		return 22; // it means we have 2 8 bit registers
+	}
+	else if (reg1 > 3 && reg2 < 4) { // it means we have 1 16bit register and 1 8bit register in
+		return 21;					// in the order(16bit , 8bit ) 
+	}
+	else return 12; // (8 bit , 16bit)
 }

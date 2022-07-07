@@ -10,7 +10,7 @@ class Decoder{
         bool isRegister(std::string data);
         bool isMemory(std::string data);
         std::vector<std::string> string_split_by_delimiter(std::string data, char delimiter);
-        int secondary_Operation(std::vector<std::string> parts);
+        int secondaryOperation(std::vector<std::string> parts);
 };
 
 

@@ -25,8 +25,8 @@ public:
 	int whichReg(std::string data);
 	bool writeDataToMemory(int segment, int celladdress,uint8_t data);
 	std::vector<std::string> string_split_by_delimiter(std::string data, char delimiter);
-
-
+	uint8_t arithmeticOperations(int opcode,int reg1 , int reg2 , bool isMemory = false);
+	int registerPair(int reg1 , int reg2);
 private:
 	memory *mem;
 
