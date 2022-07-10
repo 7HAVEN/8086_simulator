@@ -4,47 +4,62 @@
 // std
 #include<sstream>
 
-int Decoder::decodeAndGiveOperation(std::vector<std::string> line){
+int Decoder::decodeAndGiveOperation(std::vector<std::string> line) {
     try {
 
-    std::string  data = line[0];
+        std::string  data = line[0];
 
-   //!(warn) this line will cause out of bounds error for one word instructions
-    std::string secondHalfofInstruction = line[1]; // the second half of string
-    std::vector<std::string> parts  = string_split_by_delimiter(secondHalfofInstruction, ',');
-    //1
-    if (data == "MOV" || data == "mov") {
-        if (isRegister(parts[0])) { // first agrument is register 
-            if (isRegister(parts[1])) { // second arg is reg
-                return 111; //1 mov 1 reg 1 reg
+        //!(warn) this line will cause out of bounds error for one word instructions
+        std::string secondHalfofInstruction = line[1]; // the second half of string
+        std::vector<std::string> parts = string_split_by_delimiter(secondHalfofInstruction, ',');
+        //1
+        if (data == "MOV" || data == "mov") {
+            if (isRegister(parts[0])) { // first agrument is register 
+                if (isRegister(parts[1])) { // second arg is reg
+                    return 111; //1 mov 1 reg 1 reg
+                }
+                if (isMemory(parts[1])) { // second arg is mem
+                    return 112; //1 mov 1 reg 2 mem
+                }
+
+                else { //1 mov 1 reg 3 immediate data
+                    return 113;
+                }
             }
-            if(isMemory(parts[1])) { // second arg is mem
-                return 112; //1 mov 1 reg 2 mem
+            else { // first part is mem
+                if (isRegister(parts[1])) { // second arg is reg
+                    return 121;
+                }
+                else { // second arg is mem as mem to mem data transfer is not possible ;-(
+                    throw "invalid operation";
+                }
             }
+
+        }
+        //2    
+        else if (data == "ADD" || data == "add") {
+            int opcodeRange = 200;
+            int operation_code = secondaryOperation(parts);
+            return opcodeRange + operation_code;
+        }
+        else if (data == "SUB" || data == "sub") {
+            int opcodeRange = 300;
+            int operation_code = secondaryOperation(parts);
+            return opcodeRange + operation_code;
+        }
+        else if (data == "MUL" || data == "mul") {
+            int opcodeRange = 400;
+            int operation_code = secondaryOperation(parts);
+            return opcodeRange + operation_code;
+        }
+        else if (data == "DIV" || data == "div") {
+            int opcodeRange = 500;
+            int operation_code = secondaryOperation(parts);
+            return opcodeRange + operation_code;
+        }
             
-            else { //1 mov 1 reg 3 immediate data
-                return 113;
-            }
-        }
-        else { // first part is mem
-            if (isRegister(parts[1])) { // second arg is reg
-                return 121;
-            }
-            else { // second arg is mem as mem to mem data transfer is not possible ;-(
-                throw "invalid operation";
-            }
-        }
-        
     }
-    //2    
-    else if (data == "ADD" || data == "add") {
-        int opcodeRange = 200;
-        int operation_code = secondaryOperation(parts);
-        return opcodeRange + operation_code;
-    }
-    else if (data == "SUB" || data == "sub")
-        return 3;
-    }
+
     catch (std::exception e) {
         throw e;
     }
@@ -129,7 +144,7 @@ int Decoder::secondaryOperation(std::vector<std::string> parts) {
     
     if (isRegister(parts[0])) {
         if (isRegister(parts[1]))
-            return 11; // register to register addition
+            return 11; // register to register operation ( ax + bx)
         if (isMemory(parts[1]))
             return 12; // register with  memory 
         else

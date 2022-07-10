@@ -10,8 +10,7 @@ class memory {
 private:
 	int memoryCells;
 	int MAX_LIMIT;
-	uint8_t arr[0xffff];
-	std::vector<std::vector<std::string>> codeArray; 
+	std::vector<std::vector<std::string>> codeArray; // code array
 	std::vector <std::vector<uint8_t>>memoryArray; // memory array is diffrent from code array as it will only store intgers in it
 public:
 	memory(int memoryCells);

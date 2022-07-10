@@ -25,7 +25,9 @@ public:
 	int whichReg(std::string data);
 	bool writeDataToMemory(int segment, int celladdress,uint8_t data);
 	std::vector<std::string> string_split_by_delimiter(std::string data, char delimiter);
-	uint8_t arithmeticOperations(int opcode,int reg1 , int reg2 , bool isMemory = false);
+	uint8_t _8bitArithmeticOperations(int oprcode,int reg1 , int reg2 , bool isMemory ,bool isData);
+	uint16_t _16bitArithmeticOperations(int oprcode, int reg1, int reg2, bool isMemory, bool isData);
+
 	int registerPair(int reg1 , int reg2);
 private:
 	memory *mem;
@@ -52,7 +54,7 @@ private:
 	//uint8_t Dh;//10
 	//uint8_t Dl;//11
 
-	uint8_t _8bitRegArray[8];
+	uint8_t _8bitRegArray[13];
 
 
 
