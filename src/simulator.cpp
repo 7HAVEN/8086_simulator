@@ -14,7 +14,8 @@ int main(int argv, char argc[]) {
 		 memory m = memory(3000);
 		 Decoder d;
 		 _8086_Operations  oper(&m,&d);
-		 
+		 m.writeData(34, 0, 43);
+		 oper.mov16bitDataintoReg(1, 43);
 		 window w = window(1280, 720, "Example",&d,&oper);
 		 /*m.writeData("MOV A,B",0001);
 		std::string data = m.getData(0002);
@@ -27,7 +28,7 @@ int main(int argv, char argc[]) {
 		 char* buf = "mov ax,0020\nmov ds,ax\nmov ah,8\nmov al,4\n add ah,al";
 		 oper.executeCode(buf);
 		 std::cout << (unsigned)oper.get8bitData(5);
-
+			
 		 //std::cout << opcode;
 
 		

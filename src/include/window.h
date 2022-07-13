@@ -23,7 +23,7 @@ class window {
 private:
 	int winWidth, winHeight;
 	std::string winName;
-
+	int regData[13];
 public:
 	GLFWwindow* win;
 	Decoder* decoder;
@@ -32,6 +32,7 @@ public:
 	window(int width, int height, std::string name,Decoder* decoder,_8086_Operations* Operation);
 	~window();
 	void createWindow(int height, int width, std::string name, GLFWmonitor* monitor, GLFWwindow* share);
+	void getDataFromRegisters();
 	//void framebuffer_size_callback(GLFWwindow* window, int width, int height);  // idk why this wasnt used
 
 };

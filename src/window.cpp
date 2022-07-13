@@ -81,11 +81,14 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
     char codeBuffer[1000 * 16] = {};
     char segment[10] = {};
     char offset[10] = {};
-    bool run = false;
-    int seg;
+    bool run = false,fetch = false,write= false;
+    int seg = 4;
+    //int ax, bx, cx, dx;
+    
     // Main loop
     while (!glfwWindowShouldClose(win))
     {
+        getDataFromRegisters();
         glfwPollEvents();
 
         // Start the Dear ImGui frame
@@ -98,7 +101,7 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
 
         if (show_another_window)
         {
-            ImGui::Begin("Example Window", &show_another_window);
+            ImGui::Begin("8086 sim", &show_another_window);
             ImGui::InputTextMultiline("example", codeBuffer, IM_ARRAYSIZE(codeBuffer), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
             //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             {
@@ -113,14 +116,109 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
             }
             
             if (run) {
-              
+                Operation->executeCode(codeBuffer);
+
+                run = false;
+            }
+            if (fetch) {
+                if (segment[0] == '\0' || offset[0] == '\0') {
+                    std::cout << "pls enter a valid value\n";
+                }
+                else {
+                    int segm = std::stoi(segment);
+                    int off = std::stoi(offset);
+
+					seg = Operation->getDataFromMemory(segm, off);
+                }
+                
             }
             {
+                ImGui::PushItemWidth((width/2) - 50);
+              
+                
                 ImGui::InputTextWithHint("segment","segment address", segment, IM_ARRAYSIZE(segment));
-                //ImGui::SameLine(); 
-                ImGui::InputTextWithHint("offset","offset", offset, IM_ARRAYSIZE(segment));
 
-                //ImGui::InputInt
+                ImGui::InputTextWithHint("offset","offset", offset, IM_ARRAYSIZE(segment));
+                ImGui::PopItemWidth();
+                
+                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(246.0f, 0.3f, 0.9f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(7.0f, 0.7f, 0.7f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(9.0f, 0.3f, 0.9f));
+                fetch = ImGui::Button("FETCH DATA");
+                ImGui::PopStyleColor(3);
+                ImGui::InputInt("Data", &seg );
+                
+                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(246.0f, 0.3f, 0.9f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(7.0f, 0.7f, 0.7f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(9.0f, 0.3f, 0.9f));
+                write = ImGui::Button("WRITE DATA");
+                ImGui::PopStyleColor(3);
+                if (write) {
+                    int segm = std::stoi(segment);
+                    int off = std::stoi(offset);
+                    Operation->writeDataToMemory(segm, off, seg);
+                }
+                // registers
+                ImGui::PushItemWidth(width / 2 - 100);
+                ImGui::Text("16 bit Registers");
+                ImGui::Text("AX");
+                ImGui::SameLine();
+                ImGui::InputInt(" ",&regData[1]);
+                ImGui::SameLine();
+                
+                ImGui::Text("BX");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[2]);
+                
+                ImGui::Text("CX");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[3]);
+                ImGui::SameLine();
+
+                ImGui::Text("DX");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[4]);
+         
+
+                ImGui::Text("8 bit Registers");
+                ImGui::Text("Ah");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[5]);
+                ImGui::SameLine();
+
+                ImGui::Text("AL");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[6]);
+        
+
+                ImGui::Text("BH");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[7]);
+                ImGui::SameLine();
+
+                ImGui::Text("BL");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[8]);
+
+                ImGui::Text("CH");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[9]);
+                ImGui::SameLine();
+
+                ImGui::Text("CL");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[10]);
+
+                ImGui::Text("DH");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[11]);
+                ImGui::SameLine();
+
+                ImGui::Text("DL");
+                ImGui::SameLine();
+                ImGui::InputInt(" ", &regData[12]);
+
+                ImGui::PopItemWidth();
 
             }
             
@@ -144,7 +242,16 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
 
 
 }
-
+void window::getDataFromRegisters() {
+    for (int i = 0; i < 5; i++) {
+        uint16_t data = Operation->get16bitData(i);
+        regData[i] = (int)data;
+    }
+    for (int i = 5; i < 13; i++) {
+        uint8_t data = Operation->get8bitData(i);
+        regData[i] = (int)data;
+    }
+}
 window::~window() {
 
     // Cleanup

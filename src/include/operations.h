@@ -29,34 +29,18 @@ public:
 	uint16_t _16bitArithmeticOperations(int oprcode, int reg1, int reg2, bool isMemory, bool isData);
 	bool executeCode(char *buffer);
 	int registerPair(int reg1 , int reg2);
+	
+	uint16_t _16bitRegArray[5];
+
+	uint8_t _8bitRegArray[13];
+
+
 private:
 	memory *mem;
 	Decoder* decoder;
 
 	int programCounter;
 	int Ds; // ds reg 0
-	//uint16_t Ax; // 1 
-	//uint16_t Bx; // 2
-	//uint16_t Cx;//  3
-	//uint16_t Dx; // 4
-
-	uint16_t _16bitRegArray[5];
-
-	//8bit counterparts
-	//uint8_t Ah;//4
-	//uint8_t Al;//5
-
-	//uint8_t Bh;//6
-	//uint8_t Bl;//7
-
-	//uint8_t Ch;//8
-	//uint8_t Cl;//9
-
-	//uint8_t Dh;//10
-	//uint8_t Dl;//11
-
-	uint8_t _8bitRegArray[13];
-
 
 
 
