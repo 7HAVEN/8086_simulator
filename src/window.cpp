@@ -11,10 +11,12 @@
 #include<stdexcept>
 #include<iostream>
 
-window::window(int height, int width, std::string name) {
+window::window(int width, int height, std::string name,Decoder* decoder,_8086_Operations* Operation) {
 	winHeight = height;
 	winWidth = width;
 	winName = name;
+    this->decoder = decoder;
+    this->Operation = Operation;
 	createWindow(winHeight, winWidth, winName ,nullptr,nullptr);
     win = nullptr;
 
@@ -53,7 +55,7 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
  
 #endif
-    win = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
+    win = glfwCreateWindow(height, width, name.c_str(), nullptr, nullptr);
     if (win == NULL) {
         std::cout << "window creation failed";
         throw(std::runtime_error("window creation failed"));
@@ -76,7 +78,11 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
     bool show_demo_window = true;
     bool show_another_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-   
+    char codeBuffer[1000 * 16] = {};
+    char segment[10] = {};
+    char offset[10] = {};
+    bool run = false;
+    int seg;
     // Main loop
     while (!glfwWindowShouldClose(win))
     {
@@ -90,16 +96,38 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
         if (show_demo_window) // demo window
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        char buf[1000 * 16] = {};
         if (show_another_window)
         {
             ImGui::Begin("Example Window", &show_another_window);
-            ImGui::InputTextMultiline("example", buf, IM_ARRAYSIZE(buf), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
-           // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::InputTextMultiline("example", codeBuffer, IM_ARRAYSIZE(codeBuffer), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
+            //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            {
+                ImGui::PushID(0);
+                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV( 7.0f, 0.6f, 0.6f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV( 7.0f, 0.7f, 0.7f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
+                run = ImGui::Button("RUN CODE");
+                ImGui::PopStyleColor(3);
+                ImGui::PopID();
 
+            }
+            
+            if (run) {
+              
+            }
+            {
+                ImGui::InputTextWithHint("segment","segment address", segment, IM_ARRAYSIZE(segment));
+                //ImGui::SameLine(); 
+                ImGui::InputTextWithHint("offset","offset", offset, IM_ARRAYSIZE(segment));
+
+                //ImGui::InputInt
+
+            }
+            
             ImGui::End();
         }
-        
+
+       
        
         // Rendering
         ImGui::Render();

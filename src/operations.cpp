@@ -1,6 +1,6 @@
 #include "include/operations.h"
 #include<memory>
-_8086_Operations::_8086_Operations(memory* m) :mem(m) {
+_8086_Operations::_8086_Operations(memory* m , Decoder* d) :mem(m),decoder(d) {
 	Ds = 0;
 
 	for (auto& i : _16bitRegArray) {
@@ -21,9 +21,11 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 	}
 	if (Opcode == 112) { // reg to mem mov
 		int reg1 = whichReg(parts[0]);
-		uint8_t data = _8bitRegArray[reg1];
-		int celladdr = getCellAddress(parts[1]);
-		writeDataToMemory(Ds, celladdr, data);
+			uint8_t data = _8bitRegArray[reg1];
+			int celladdr = getCellAddress(parts[1]);
+			writeDataToMemory(Ds, celladdr, data);
+
+		
 		return true;
 
 	}
@@ -36,11 +38,18 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 	}
 	if (Opcode == 113) { // immediate data to reg
 		int reg1 = whichReg(parts[0]);
-		uint16_t intData = std::stoi(parts[1]);
+		if (reg1 > 4) {
+			uint8_t intData = std::stoi(parts[1]);
+			_8bitRegArray[reg1] = intData;
+		}
+		else {
+			uint16_t intData = std::stoi(parts[1]);
+			_16bitRegArray[reg1] = intData;
+
+		}
 		/*	uint8_t  data = static_cast<uint8_t>(intData);*/
 
 
-		_16bitRegArray[reg1] = intData;
 		return true;
 	}
 
@@ -318,4 +327,13 @@ int _8086_Operations::registerPair(int reg1, int reg2) {
 		return 12;					// in the order(16bit , 8bit ) 
 	}
 	else return 21; // (8 bit , 16bit)
+}
+
+bool _8086_Operations::executeCode(char *buffer) {
+	int lines = mem->writeCodeBuffer(buffer);
+	for (int i = 0; i < lines; i++) {
+		int opcode = decoder->decodeAndGiveOperation(mem->getCode(i));
+		performOperation(opcode, mem->getCode(i));
+	}
+	return true;
 }

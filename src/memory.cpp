@@ -6,7 +6,7 @@
 #include<sstream>
 memory::memory(int memoryCells) {
 	this->memoryCells = memoryCells;
-	MAX_LIMIT = 10000;
+	MAX_LIMIT = 1000;
 	memoryArray.resize(1000); // MAX limit is arbitarly set high to prevent memory outofbounds errors
 	for (auto& i : memoryArray) {
 		i.resize(MAX_LIMIT);
@@ -52,7 +52,7 @@ std::vector<std::string> memory::string_splitter(std::string data){
 bool memory::writeCode(int starting_address, std::string codeLines) {
 	try {
 
-		std::vector<std::string> buf = string_splitter(codeLines);
+		std::vector<std::string> buf = string_splitter(codeLines); // this splits the instruction and operation
 		codeArray[starting_address] = buf;
 		
 		return true;
@@ -66,6 +66,34 @@ bool memory::writeCode(int starting_address, std::string codeLines) {
 std::vector<std::string> memory::getCode(int lineAddress) {
 	return codeArray[lineAddress];
 }
+
+int memory::writeCodeBuffer(char* buffer) {
+	try {
+
+	int lineCount = 0;
+	std::stringstream stream(buffer);
+	std::vector<std::string> codeBuffer;
+	while (stream.good()) {
+		std::string temp;
+		std::getline(stream, temp, '\n');
+		codeBuffer.push_back(temp);
+	}
+	
+	for (auto i : codeBuffer) {
+		writeCode(lineCount, i);
+		
+		//std::cout << lineCount << "  " << i << "\n";
+		lineCount++;
+	}
+	
+	return lineCount;
+	}
+	catch (std::exception e) {
+		std::cout <<"writing buffer failed :: " << e.what();
+		return false;
+	}
+}
+
 
 // bool memory::reset(int newSize) {
 // 	//TODO make a popup

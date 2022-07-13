@@ -155,6 +155,9 @@ int Decoder::secondaryOperation(std::vector<std::string> parts) {
             return 21;
 
     }
-    else
+    else {
         throw "invalid operation";
+        return -1;
+    }
+   
 }

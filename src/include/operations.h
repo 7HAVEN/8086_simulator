@@ -4,7 +4,7 @@
 #define _Operations_
 
 #include "memory.h" // user def
-
+#include "decoder.h"
 //std
 #include<string>
 #include<vector>
@@ -12,7 +12,7 @@
 
 class _8086_Operations {
 public:
-	_8086_Operations(memory *m);
+	_8086_Operations(memory *m ,Decoder *d);
 	_8086_Operations();
 	bool performOperation(int Opcode, std::vector<std::string> line);
 	bool mov8bitDataintoReg(int reg, uint8_t data); // mov 8 bit into register
@@ -27,10 +27,11 @@ public:
 	std::vector<std::string> string_split_by_delimiter(std::string data, char delimiter);
 	uint8_t _8bitArithmeticOperations(int oprcode,int reg1 , int reg2 , bool isMemory ,bool isData);
 	uint16_t _16bitArithmeticOperations(int oprcode, int reg1, int reg2, bool isMemory, bool isData);
-
+	bool executeCode(char *buffer);
 	int registerPair(int reg1 , int reg2);
 private:
 	memory *mem;
+	Decoder* decoder;
 
 	int programCounter;
 	int Ds; // ds reg 0

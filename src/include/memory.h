@@ -21,6 +21,7 @@ public:
 	std::vector<std::string> getCode(int lineAddress);
 	std::vector<std::string> string_splitter(std::string data);
 	bool reset(int newSize);
+	int writeCodeBuffer(char* buffer);
 	bool writeCode(int starting_address , std::string codeLines);
 };
 

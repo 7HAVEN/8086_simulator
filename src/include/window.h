@@ -3,6 +3,9 @@
 #ifndef _window_
 #define _window_
 //externals
+#include "include/memory.h"
+#include "include/decoder.h"
+#include "include/operations.h"
 
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -23,9 +26,12 @@ private:
 
 public:
 	GLFWwindow* win;
-	window(int widht, int height, std::string name);
+	Decoder* decoder;
+	_8086_Operations* Operation;
+
+	window(int width, int height, std::string name,Decoder* decoder,_8086_Operations* Operation);
 	~window();
-	void createWindow(int width, int height, std::string name, GLFWmonitor* monitor, GLFWwindow* share);
+	void createWindow(int height, int width, std::string name, GLFWmonitor* monitor, GLFWwindow* share);
 	//void framebuffer_size_callback(GLFWwindow* window, int width, int height);  // idk why this wasnt used
 
 };
