@@ -16,7 +16,7 @@ int main(int argv, char argc[]) {
 		 _8086_Operations  oper(&m,&d);
 		 m.writeData(34, 0, 43);
 		 oper.mov16bitDataintoReg(1, 43);
-		 window w = window(1280, 720, "Example",&d,&oper);
+		 window w = window(1280, 720, "simulator",&d,&oper);
 		 /*m.writeData("MOV A,B",0001);
 		std::string data = m.getData(0002);
 		std::cout << data;*/

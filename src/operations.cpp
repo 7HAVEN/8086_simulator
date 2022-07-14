@@ -1,6 +1,7 @@
 #include "include/operations.h"
 #include<memory>
-_8086_Operations::_8086_Operations(memory* m , Decoder* d) :mem(m),decoder(d) {
+#include<iostream>
+_8086_Operations::_8086_Operations(memory* m, Decoder* d) :mem(m), decoder(d) {
 	Ds = 0;
 
 	for (auto& i : _16bitRegArray) {
@@ -19,22 +20,22 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 		copyReg(reg1, reg2);
 		return true;
 	}
-	if (Opcode == 112) { // reg to mem mov
-		int reg1 = whichReg(parts[0]);
-			uint8_t data = _8bitRegArray[reg1];
-			int celladdr = getCellAddress(parts[1]);
-			writeDataToMemory(Ds, celladdr, data);
-
+	if (Opcode == 112) { // mem to reg mov
 		
-		return true;
-
-	}
-	if (Opcode == 121) { // mem to reg
-		int reg1 = whichReg(parts[1]);
-		int addr = getCellAddress(parts[0]);
+		int reg1 = whichReg(parts[0]);
+		int addr = getCellAddress(parts[1]);
 		uint8_t  data = getDataFromMemory(Ds, addr);
 		mov8bitDataintoReg(reg1, data);
 		return true;
+
+	}
+	if (Opcode == 121) { // reg to mem
+		int reg1 = whichReg(parts[1]);
+
+		uint8_t data = _8bitRegArray[reg1];
+		int celladdr = getCellAddress(parts[0]);
+		writeDataToMemory(Ds, celladdr, data);
+		std::cout << "Debug" << reg1 << " " << (unsigned)data << " " << celladdr << "\n";
 	}
 	if (Opcode == 113) { // immediate data to reg
 		int reg1 = whichReg(parts[0]);
@@ -222,25 +223,25 @@ std::vector<std::string> _8086_Operations::string_split_by_delimiter(std::string
 
 uint8_t _8086_Operations::_8bitArithmeticOperations(int oprcode, int reg1, int reg2, bool isMemory, bool isData) {
 
-		if (isData) { // immediate data
-			if (oprcode == 2) return _8bitRegArray[reg1] + static_cast<uint8_t>(reg2);
-			if (oprcode == 3) return _8bitRegArray[reg1] - static_cast<uint8_t>(reg2);
-			if (oprcode == 4) return _8bitRegArray[reg1] * static_cast<uint8_t>(reg2);
-		}
-		if (isMemory) {// memory data
-			uint8_t data = getDataFromMemory(Ds, reg2);
-			if (oprcode == 2) return  _8bitRegArray[reg1] + data;
-			if (oprcode == 3) return  _8bitRegArray[reg1] - data;
-			if (oprcode == 4) return  _8bitRegArray[reg1] * data;
-		
-		
-		}
-		else { // both registers
-			if (oprcode == 2) 	return  _8bitRegArray[reg1] + _8bitRegArray[reg2];
-			if (oprcode == 3)	return  _8bitRegArray[reg1] - _8bitRegArray[reg2];
-			if (oprcode == 4)	return  _8bitRegArray[reg1] * _8bitRegArray[reg2];
-		
-		}
+	if (isData) { // immediate data
+		if (oprcode == 2) return _8bitRegArray[reg1] + static_cast<uint8_t>(reg2);
+		if (oprcode == 3) return _8bitRegArray[reg1] - static_cast<uint8_t>(reg2);
+		if (oprcode == 4) return _8bitRegArray[reg1] * static_cast<uint8_t>(reg2);
+	}
+	if (isMemory) {// memory data
+		uint8_t data = getDataFromMemory(Ds, reg2);
+		if (oprcode == 2) return  _8bitRegArray[reg1] + data;
+		if (oprcode == 3) return  _8bitRegArray[reg1] - data;
+		if (oprcode == 4) return  _8bitRegArray[reg1] * data;
+
+
+	}
+	else { // both registers
+		if (oprcode == 2) 	return  _8bitRegArray[reg1] + _8bitRegArray[reg2];
+		if (oprcode == 3)	return  _8bitRegArray[reg1] - _8bitRegArray[reg2];
+		if (oprcode == 4)	return  _8bitRegArray[reg1] * _8bitRegArray[reg2];
+
+	}
 
 }
 uint16_t _8086_Operations::_16bitArithmeticOperations(int oprcode, int reg1, int reg2, bool isMemory, bool isData) {
@@ -249,7 +250,7 @@ uint16_t _8086_Operations::_16bitArithmeticOperations(int oprcode, int reg1, int
 		if (oprcode == 2) return _16bitRegArray[reg1] + static_cast<uint16_t>(reg2);
 		if (oprcode == 3) return _16bitRegArray[reg1] - static_cast<uint16_t>(reg2);
 		if (oprcode == 4) return _16bitRegArray[reg1] * static_cast<uint16_t>(reg2);
-		if(oprcode == 5) {
+		if (oprcode == 5) {
 			uint16_t dividend = _16bitRegArray[reg1];
 			uint8_t divisor = static_cast<uint8_t>(reg2);
 			uint8_t quotient = dividend / divisor;
@@ -263,7 +264,7 @@ uint16_t _8086_Operations::_16bitArithmeticOperations(int oprcode, int reg1, int
 			_8bitRegArray[regpair] = quotient;
 			_8bitRegArray[regpair + 1] = remainder;
 			return static_cast<uint16_t>(std::stoi(res));
-		} 
+		}
 
 
 	}
@@ -287,7 +288,7 @@ uint16_t _8086_Operations::_16bitArithmeticOperations(int oprcode, int reg1, int
 			if (reg1 == 3) regpair = 9;
 			if (reg1 == 4) regpair = 11;
 			_8bitRegArray[regpair] = quotient;
-			_8bitRegArray[regpair + 1 ] = remainder;
+			_8bitRegArray[regpair + 1] = remainder;
 			return static_cast<uint16_t>(std::stoi(res));
 		}
 
@@ -329,7 +330,7 @@ int _8086_Operations::registerPair(int reg1, int reg2) {
 	else return 21; // (8 bit , 16bit)
 }
 
-bool _8086_Operations::executeCode(char *buffer) {
+bool _8086_Operations::executeCode(char* buffer) {
 	int lines = mem->writeCodeBuffer(buffer);
 	for (int i = 0; i < lines; i++) {
 		int opcode = decoder->decodeAndGiveOperation(mem->getCode(i));

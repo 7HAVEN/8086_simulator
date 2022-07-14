@@ -33,6 +33,7 @@ public:
 	uint16_t _16bitRegArray[5];
 
 	uint8_t _8bitRegArray[13];
+	int Ds; // ds reg 0
 
 
 private:
@@ -40,7 +41,6 @@ private:
 	Decoder* decoder;
 
 	int programCounter;
-	int Ds; // ds reg 0
 
 
 
