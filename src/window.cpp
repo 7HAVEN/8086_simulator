@@ -67,6 +67,7 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
@@ -82,7 +83,7 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
     char segment[10] = "0000";
     char offset[10] = "0000";
     bool run = false,fetch = false,write= false;
-    int seg = 4;
+    int seg = 0;
     //int ax, bx, cx, dx;
     
     // Main loop
@@ -101,6 +102,8 @@ void window::createWindow(int width, int height, std::string name, GLFWmonitor* 
         {
             //embraceTheDarkness();g
             ImGui::Begin("8086 sim", &show_another_window);
+            ImGui::GetWindowContentRegionMax();
+            ImGui::SetWindowFontScale(1.5f);
             ImGui::InputTextMultiline("example", codeBuffer, IM_ARRAYSIZE(codeBuffer), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
             //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             {

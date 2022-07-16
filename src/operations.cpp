@@ -30,10 +30,10 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 
 	}
 	if (Opcode == 121) { // reg to mem
-		int reg1 = whichReg(parts[1]);
-
-		uint8_t data = _8bitRegArray[reg1];
 		int celladdr = getCellAddress(parts[0]);
+		int reg1 = whichReg(parts[1]);
+		uint8_t data = _8bitRegArray[reg1];
+
 		writeDataToMemory(Ds, celladdr, data);
 		std::cout << "Debug" << reg1 << " " << (unsigned)data << " " << celladdr << "\n";
 	}
@@ -64,6 +64,10 @@ bool _8086_Operations::performOperation(int Opcode, std::vector<std::string> lin
 			int rcode = registerPair(reg1, reg2); // gives 16 bit or 8bit reg pair
 			if (rcode == 11) {
 				_16bitRegArray[reg1] = _16bitArithmeticOperations(operation, reg1, reg2, false, false);
+			}
+			if (rcode == 12) {
+				_16bitRegArray[reg1] = _16bitArithmeticOperations(operation, reg1, reg2, false, false);
+
 			}
 			if (rcode == 22) {
 				_8bitRegArray[reg1] = _8bitArithmeticOperations(operation, reg1, reg2, false, false);
@@ -150,7 +154,7 @@ int _8086_Operations::whichReg(std::string data) {
 
 bool _8086_Operations::mov8bitDataintoReg(int reg, uint8_t data) { // mov 8 bit into register
 
-	if (reg > 4 && reg < 12) {
+	if (reg > 4 && reg < 13) {
 		_8bitRegArray[reg] = data; // out of bounds probality
 		return true;
 	}
@@ -158,7 +162,7 @@ bool _8086_Operations::mov8bitDataintoReg(int reg, uint8_t data) { // mov 8 bit 
 }
 
 bool _8086_Operations::mov16bitDataintoReg(int reg, uint16_t data) {
-	if (reg > 0 && reg < 4) {
+	if (reg > 0 && reg < 5) {
 		_16bitRegArray[reg] = data;
 		return true;
 	}
@@ -171,11 +175,11 @@ bool _8086_Operations::copyReg(int reg1, int reg2) { // reg 1  <- reg2
 
 		return true;
 	}
-	if (reg1 < 4 && reg2 < 4) {
+	if (reg1 < 5 && reg2 < 5) {
 		uint16_t data = _16bitRegArray[reg2];
 		return mov16bitDataintoReg(reg1, data);
 	}
-	if (reg1 > 3 && reg2 > 3) {
+	if (reg1 > 4 && reg2 > 4) {
 		uint8_t data = _8bitRegArray[reg2];
 		return mov8bitDataintoReg(reg1, data);
 	}
@@ -183,7 +187,7 @@ bool _8086_Operations::copyReg(int reg1, int reg2) { // reg 1  <- reg2
 }
 
 uint16_t _8086_Operations::get16bitData(int reg) {
-	if (reg >= 0 && reg <= 3) {
+	if (reg >= 0 && reg <= 4) {
 		return _16bitRegArray[reg];
 	}
 	return NULL;
@@ -318,13 +322,13 @@ uint16_t _8086_Operations::_16bitArithmeticOperations(int oprcode, int reg1, int
 }
 
 int _8086_Operations::registerPair(int reg1, int reg2) {
-	if (reg1 < 4 && reg2 < 4) {
+	if (reg1 < 5 && reg2 < 5) {
 		return 11; // it means we have 16 bit  
 	}
-	else if (reg1 > 3 && reg2 > 3) {
+	else if (reg1 > 4 && reg2 > 4) {
 		return 22; // it means we have 2 8 bit registers
 	}
-	else if (reg1 > 3 && reg2 < 4) { // it means we have 1 16bit register and 1 8bit register in
+	else if (reg1 < 5 && reg2 > 4) { // it means we have 1 16bit register and 1 8bit register in
 		return 12;					// in the order(16bit , 8bit ) 
 	}
 	else return 21; // (8 bit , 16bit)
