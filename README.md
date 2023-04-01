@@ -72,7 +72,7 @@ particular style and severe lack of comments is also a big problem but they dont
 good coding practices in the university. and this thing doesn't support hex data so  this is not an exact way how 8086 will behave therefor your results may vary
 i made this as  university project and i passed the examination so i dont wanna fix any of these major issues for now and if you wanna use it feel free to clone the repo and add on this project. 
 
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/7HAVEN/8086_simulator/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/7HAVEN/8086_simulator/blob/main/LICENSE)
 
 
 ## Authors
