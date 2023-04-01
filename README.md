@@ -4,6 +4,9 @@ a simple 8086 simulator made in c++
 it supports basic instructions like moving data in and out of memory and basic arithmetic operations like add , sub , mul and div.
 
 ## currently supported instructions 
+
+currently it supports writing 8 bit and 16 bit data to memory and in between registers
+
 ### MOV
 ```asm
 MOV <REG,REG> moving data between registers
@@ -26,6 +29,9 @@ MOV ch,12
 ```
 ### Arihmetic instructions
 #### ADD
+
+Note: please avoid data overflow  as flag register are not currently supported.
+Due to which wrong results might be produced and you will have no way of knowing.
 ```asm
 ADD AL,AH
 ADD AX,06
