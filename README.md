@@ -1,7 +1,8 @@
 # 8086_simulator
 
 a simple 8086 simulator made in c++ 
-it supports basic instructions 
+it supports basic instructions like moving data in and out of memory and basic arithmetic operations like add , sub , mul and div.
+
 ## currently supported instructions 
 ### MOV
 ```asm
@@ -23,6 +24,28 @@ MOV AX,43
 MOV ch,12
   
 ```
+### Arihmetic instructions
+#### ADD
+```asm
+ADD AL,AH
+ADD AX,06
+ADD AH,BH
+```
+#### SUB
+```asm
+SUB AH,BH
+SUB AX,06
+SUB AH,BH
+```
+#### MUL
+```asm
+MUL AH,BH
+MUL AX,06
+```
+
+#### DIV
+DIV AH,BL
+note div operations currently dont support reading data from memory
 ## Usage
 
 ```bash
@@ -40,10 +63,10 @@ the ui is made in imgui
 ## DISCLAIMBER
 pls dont read the code base its bad for your mental health i dont know how i managed to write such bad code its abysmal and doesn't follow any 
 particular style and severe lack of comments is also a big problem but they dont teach us 
-good coding practices in the university. and this thing doesn't support hex data so ya this is not an exact way how 8086 will behave so your results may vary
+good coding practices in the university. and this thing doesn't support hex data so  this is not an exact way how 8086 will behave therefor your results may vary
 i made this as  university project and i passed the examination so i dont wanna fix any of these major issues for now and if you wanna use it feel free to clone the repo and add on this project. 
 
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/7HAVEN/8086_simulator/blob/main/LICENSE)
 
 
 ## Authors
