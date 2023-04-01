@@ -53,15 +53,26 @@ MUL AX,06
 DIV AH,BL
 note div operations currently dont support reading data from memory
 ## Usage
-
+### Linux
 ```bash
+git clone  https://github.com/7HAVEN/8086_simulator.git --recursive
+cd 8086_simulator
 mkdir build
 cd build
-
 cmake  -- build .
-
 ./simulator
 ```
+### Windows
+
+```bash
+git clone  https://github.com/7HAVEN/8086_simulator.git --recursive 
+cd 8086_simulator
+```
+Then open the project in visual studio 
+and then select cmake file as starting point and click run 
+
+Note: you must have cmake and Linux building tools in visual studio
+
 ## UI
 the ui is made in imgui 
 ![image](https://github.com/7HAVEN/oops_cpp/blob/main/image2.png)
